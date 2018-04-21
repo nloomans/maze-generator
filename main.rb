@@ -11,7 +11,7 @@ class MazeGenerator
 
   def generate()
     @visitedCells = [@currentPos]
-    @stack = [Pos.new(0, 0)]
+    @stack = [Pos.new(rand(@maze.width), rand(@maze.height))]
 
     while !@stack.empty?
       step()
