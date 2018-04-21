@@ -13,6 +13,26 @@ Pos = Struct.new(:x, :y) do
       Pos.new(x - 1, y)
     end
   end
+
+  def dir_from(pos)
+    diff_x = x - pos.x
+    diff_y = y - pos.y
+
+    case Pos.new(diff_x, diff_y)
+    when Pos.new(0, -1)
+      :up
+    when Pos.new(1, 0)
+      :right
+    when Pos.new(0, 1)
+      :down
+    when Pos.new(-1, 0)
+      :left
+    end
+  end
+
+  def to_s()
+    "(#{x}, #{y})"
+  end
 end
 
 Tile = Struct.new(:pos, :up, :right, :down, :left)
@@ -74,16 +94,38 @@ end
 class MazeGenerator
   def initialize(width, height)
     @maze = Maze.new(width, height)
-    p @maze.width
   end
 
-
   def generate()
-    @currentPos = Pos.new(Random.rand(@width), Random.rand(@height))
     @visitedCells = [@currentPos]
+    @stack = [Pos.new(0, 0)]
+
+    while !@stack.empty?
+      step()
+    end
+  end
+
+  def step()
+    neighbors = @maze.neighbors(@stack.last)
+    neighbors.select! do |neighbor|
+      !@visitedCells.include? neighbor
+    end
+
+    if neighbors.empty?
+      @stack.pop()
+    else
+      randomNeighbor = neighbors.sample
+      print "Removing wall between ", @stack.last, " and ", randomNeighbor, "\n"
+      @maze.set(@stack.last, randomNeighbor.dir_from(@stack.last), false)
+
+      @stack.push(randomNeighbor)
+      @visitedCells.push(randomNeighbor)
+    end
   end
 end
 
-# MazeGenerator.new(15, 15)
-maze = Maze.new(15, 15)
-p maze.neighbors(Pos.new(0,0))
+mazeGenerator = MazeGenerator.new(15, 15)
+mazeGenerator.generate
+# p mazeGenerator
+# maze = Maze.new(15, 15)
+# p maze.neighbors(Pos.new(0,0))
