@@ -6,6 +6,7 @@ class MazeGenerator
 
   def initialize(width, height)
     @maze = Maze.new(width, height)
+    @visitedTiles = Array.new(width) { Array.new(height) { false } }
   end
 
   def generate()
@@ -20,7 +21,7 @@ class MazeGenerator
   def step()
     neighbors = @maze.neighbors(@stack.last)
     neighbors.select! do |neighbor|
-      !@visitedCells.include? neighbor
+      @visitedTiles[neighbor.x][neighbor.y] == false
     end
 
     if neighbors.empty?
@@ -31,7 +32,7 @@ class MazeGenerator
       @maze.set(@stack.last, randomNeighbor.dir_from(@stack.last), false)
 
       @stack.push(randomNeighbor)
-      @visitedCells.push(randomNeighbor)
+      @visitedTiles[randomNeighbor.x][randomNeighbor.y] = true
     end
   end
 end
