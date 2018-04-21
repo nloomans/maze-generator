@@ -38,6 +38,6 @@ class MazeGenerator
   end
 end
 
-mazeGenerator = MazeGenerator.new(118, 30)
+mazeGenerator = MazeGenerator.new(ARGV[0].to_i, ARGV[1].to_i)
 mazeGenerator.generate
 puts mazeGenerator.maze
