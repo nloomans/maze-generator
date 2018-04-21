@@ -14,6 +14,7 @@ class MazeGenerator
     @stack = [Pos.new(rand(@maze.width), rand(@maze.height))]
 
     while !@stack.empty?
+      puts @maze if ENV["DEBUG"] == "visual"
       step()
     end
   end
@@ -28,7 +29,7 @@ class MazeGenerator
       @stack.pop()
     else
       randomNeighbor = neighbors.sample
-      print "Removing wall between ", @stack.last, " and ", randomNeighbor, "\n"
+      print "Removing wall between ", @stack.last, " and ", randomNeighbor, "\n" if ENV["DEBUG"] == "log"
       @maze.set(@stack.last, randomNeighbor.dir_from(@stack.last), false)
 
       @stack.push(randomNeighbor)
