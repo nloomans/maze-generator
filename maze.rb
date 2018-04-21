@@ -53,7 +53,7 @@ class Maze
     end
   end
 
-  def to_s
+  def to_s(prefix='')
     drawingField = Array.new(@height * 2 + 1) { " " * (@width * 2 + 1) }
 
     @v_walls.each_index do |x|
@@ -76,6 +76,6 @@ class Maze
       end
     end
 
-    drawingField.join("\n")
+    drawingField.map { |line| prefix + line }.join("\n")
   end
 end

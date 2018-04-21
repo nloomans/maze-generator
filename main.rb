@@ -13,9 +13,26 @@ class MazeGenerator
     @visitedCells = [@currentPos]
     @stack = [Pos.new(rand(@maze.width), rand(@maze.height))]
 
+    if ENV["DEBUG"] == "visual"
+      print "\e[?1049h" # Save the state of the terminal
+      print "\e[2J" # Clear the screen
+      print "\e[0;0H" # Move the cursor to 0, 0
+      print "\n   [ \e[1;35mGenerating maze...\e[0m ]\n\n" # Print some nice graphics
+      print "\e[s" # Save the cursor position
+    end
+
+    print "\e[s" if ENV["DEBUG"] == "visual"
+
     while !@stack.empty?
-      puts @maze if ENV["DEBUG"] == "visual"
       step()
+      if ENV["DEBUG"] == "visual"
+        print "\e[u" # Restore the cursor position
+        print @maze.to_s("   ")
+      end
+    end
+
+    if ENV["DEBUG"] == "visual"
+      print "\e[?1049l" # Restore the state of the terminal
     end
   end
 
