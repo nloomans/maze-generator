@@ -89,9 +89,37 @@ class Maze
       @v_walls[pos.x][pos.y] = state
     end
   end
+
+  def to_s
+    drawingField = Array.new(@height * 2 + 1) { " " * (@width * 2 + 1) }
+
+    @v_walls.each_index do |x|
+      @v_walls[x].each_index do |y|
+        next if @v_walls[x][y] == false
+
+        drawingField[y * 2][x * 2] = "█"
+        drawingField[y * 2 + 1][x * 2] = "█"
+        drawingField[y * 2 + 2][x * 2] = "█"
+      end
+    end
+
+    @h_walls.each_index do |x|
+      @h_walls[x].each_index do |y|
+        next if @h_walls[x][y] == false
+
+        drawingField[y * 2][x * 2] = "█"
+        drawingField[y * 2][x * 2 + 1] = "█"
+        drawingField[y * 2][x * 2 + 2] = "█"
+      end
+    end
+
+    drawingField.join("\n")
+  end
 end
 
 class MazeGenerator
+  attr_reader :maze
+
   def initialize(width, height)
     @maze = Maze.new(width, height)
   end
@@ -126,6 +154,4 @@ end
 
 mazeGenerator = MazeGenerator.new(15, 15)
 mazeGenerator.generate
-# p mazeGenerator
-# maze = Maze.new(15, 15)
-# p maze.neighbors(Pos.new(0,0))
+puts mazeGenerator.maze
