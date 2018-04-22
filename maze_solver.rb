@@ -1,5 +1,6 @@
 require_relative 'pos'
 require_relative 'maze'
+require_relative 'tui'
 
 class MazeSolver
   attr_reader :maze
@@ -15,26 +16,27 @@ class MazeSolver
 
   def solve!()
     if ENV["DEBUG"] == "visual"
-      print "\e[?1049h" # Save the state of the terminal
-      print "\e[2J" # Clear the screen
-      print "\e[0;0H" # Move the cursor to 0, 0
-      print "\n   [ \e[1;35mSolving maze...\e[0m ]\n\n" # Print some nice graphics
-      print "\e[s" # Save the cursor position
+      TUI::Screen.save
+      TUI::Screen.reset
+      print "\n   [ #{TUI::Color.purple}Solving maze...#{TUI::Color.reset} ]\n\n"
+      TUI::Cursor.save
+
     end
 
     while @stack.last != @end_pos
       step()
 
       if ENV["DEBUG"] == "visual"
-        print "\e[u" # Restore the cursor position
+        TUI::Cursor.restore
         print @maze.to_s("   ", @stack)
         print "\n\n"
         puts "   Stack size: #{@stack.length}"
+        puts "   Current algorithm: Depth-first search"
       end
     end
 
     if ENV["DEBUG"] == "visual"
-      print "\e[?1049l" # Restore the state of the terminal
+      TUI::Screen.restore
     end
   end
 

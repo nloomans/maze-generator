@@ -22,31 +22,30 @@ class MazeGenerator
     @stack = [start_pos]
 
     if ENV["DEBUG"] == "visual"
-      print "\e[?1049h" # Save the state of the terminal
-      print "\e[2J" # Clear the screen
-      print "\e[0;0H" # Move the cursor to 0, 0
-      print "\n   [ \e[1;35mGenerating maze...\e[0m ]\n\n" # Print some nice graphics
-      print "\e[s" # Save the cursor position
+      TUI::Screen.save
+      TUI::Screen.reset
+      print "\n   [ #{TUI::Color.purple}Generating maze...#{TUI::Color.reset} ]\n\n"
+      TUI::Cursor.save
     end
 
     while !@stack.empty?
       step()
 
       if ENV["DEBUG"] == "visual"
-        print "\e[u" # Restore the cursor position
+        TUI::Cursor.restore
         print @maze.to_s("   ")
         print "\n\n"
-        puts "   Stack size: #{@stack.length}/#{@stack_threshold}"
+        puts "   Stack size: #{@stack.length}"
         if @stack.length < @stack_threshold
-          puts "   Current algorithm: Depth-first-search"
+          puts "   Current algorithm: Depth-first search"
         else
-          puts "   Current algorithm: Breath-first-search"
+          puts "   Current algorithm: Breath-first search"
         end
       end
     end
 
     if ENV["DEBUG"] == "visual"
-      print "\e[?1049l" # Restore the state of the terminal
+      TUI::Screen.restore
     end
   end
 
