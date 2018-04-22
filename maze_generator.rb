@@ -4,9 +4,15 @@ require_relative 'maze'
 class MazeGenerator
   attr_reader :maze
 
-  def initialize(width, height, stack_threshold)
+  def initialize(width, height, stack_threshold = nil)
     @maze = Maze.new(width, height)
-    @stack_threshold = stack_threshold
+
+    @stack_threshold = if stack_threshold
+      stack_threshold
+    else
+      width * height
+    end
+
     @visitedTiles = Array.new(width) { Array.new(height) { false } }
   end
 

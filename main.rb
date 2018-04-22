@@ -5,7 +5,7 @@ require_relative 'pos'
 width = ARGV[0].to_i
 height = ARGV[1].to_i
 
-maze_generator = MazeGenerator.new(width, height, 10000000)
+maze_generator = MazeGenerator.new(width, height)
 maze_generator.generate!
 
 maze = maze_generator.maze
