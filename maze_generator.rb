@@ -16,6 +16,14 @@ class MazeGenerator
     @visitedTiles = Array.new(width) { Array.new(height) { false } }
   end
 
+  def current_algorithm
+    if @stack.length < @stack_threshold
+      :dfs
+    else
+      :bfs
+    end
+  end
+
   def generate!()
     start_pos = Pos.new(rand(@maze.width), rand(@maze.height))
     @visitedTiles[start_pos.x][start_pos.y] = true
@@ -39,13 +47,7 @@ class MazeGenerator
         puts
         TUI::Screen.reset_line
         puts "   Stack size: #{@stack.length}"
-        if @stack.length < @stack_threshold
-          TUI::Screen.reset_line
-          puts "   Current algorithm: Depth-first search"
-        else
-          TUI::Screen.reset_line
-          puts "   Current algorithm: Breath-first search"
-        end
+        puts "   Current algorithm: #{current_algorithm}"
       end
     end
 
@@ -55,10 +57,9 @@ class MazeGenerator
   end
 
   def step()
-    current_tile =  if @stack.length < @stack_threshold
-      @stack.last
-    else
-      @stack.first
+    current_tile = case current_algorithm
+      when :dfs then @stack.last
+      when :bfs then @stack.first
     end
 
     neighbors = @maze.neighbors(current_tile)
@@ -67,10 +68,9 @@ class MazeGenerator
     end
 
     if neighbors.empty?
-      if @stack.length < @stack_threshold
-        @stack.pop()
-      else
-        @stack.shift()
+      case current_algorithm
+        when :dfs then @stack.pop()
+        when :bfs then @stack.shift()
       end
     else
       randomNeighbor = neighbors.sample
