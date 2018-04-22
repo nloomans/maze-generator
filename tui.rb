@@ -29,7 +29,7 @@ module TUI
       "\e[0;31;1m"
     end
 
-    def self.purple
+    def self.magenta
       "\e[1;35m"
     end
 

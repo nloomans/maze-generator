@@ -24,7 +24,9 @@ class MazeGenerator
     if ENV["DEBUG"] == "visual"
       TUI::Screen.save
       TUI::Screen.reset
-      print "\n   [ #{TUI::Color.purple}Generating maze...#{TUI::Color.reset} ]\n\n"
+      puts
+      puts "   [ #{TUI::Color.magenta}Generating maze...#{TUI::Color.reset} ]"
+      puts
       TUI::Cursor.save
     end
 
@@ -33,8 +35,8 @@ class MazeGenerator
 
       if ENV["DEBUG"] == "visual"
         TUI::Cursor.restore
-        print @maze.to_s("   ")
-        print "\n\n"
+        puts @maze.to_s("   ")
+        puts
         puts "   Stack size: #{@stack.length}"
         if @stack.length < @stack_threshold
           puts "   Current algorithm: Depth-first search"

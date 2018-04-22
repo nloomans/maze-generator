@@ -18,9 +18,10 @@ class MazeSolver
     if ENV["DEBUG"] == "visual"
       TUI::Screen.save
       TUI::Screen.reset
-      print "\n   [ #{TUI::Color.purple}Solving maze...#{TUI::Color.reset} ]\n\n"
+      puts
+      puts "   [ #{TUI::Color.magenta}Solving maze...#{TUI::Color.reset} ]"
+      puts
       TUI::Cursor.save
-
     end
 
     while @stack.last != @end_pos
@@ -28,8 +29,8 @@ class MazeSolver
 
       if ENV["DEBUG"] == "visual"
         TUI::Cursor.restore
-        print @maze.to_s("   ", @stack)
-        print "\n\n"
+        puts @maze.to_s("   ", @stack)
+        puts
         puts "   Stack size: #{@stack.length}"
         puts "   Current algorithm: Depth-first search"
       end
