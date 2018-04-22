@@ -4,14 +4,16 @@ require_relative 'maze'
 class MazeGenerator
   attr_reader :maze
 
-  def initialize(width, height)
+  def initialize(width, height, stack_limit)
     @maze = Maze.new(width, height)
+    @stack_limit = stack_limit
     @visitedTiles = Array.new(width) { Array.new(height) { false } }
   end
 
   def generate!()
-    @visitedCells = [@currentPos]
-    @stack = [Pos.new(rand(@maze.width), rand(@maze.height))]
+    start_pos = Pos.new(rand(@maze.width), rand(@maze.height))
+    @visitedTiles[start_pos.x][start_pos.y] = true
+    @stack = [start_pos]
 
     if ENV["DEBUG"] == "visual"
       print "\e[?1049h" # Save the state of the terminal
@@ -21,13 +23,19 @@ class MazeGenerator
       print "\e[s" # Save the cursor position
     end
 
-    print "\e[s" if ENV["DEBUG"] == "visual"
-
     while !@stack.empty?
       step()
+
       if ENV["DEBUG"] == "visual"
         print "\e[u" # Restore the cursor position
         print @maze.to_s("   ")
+        print "\n\n"
+        puts "   Stack size: #{@stack.length}"
+        if @stack.length < @stack_limit
+          puts "   Current algorithm: Depth-first-search"
+        else
+          puts "   Current algorithm: Breath-first-search"
+        end
       end
     end
 
@@ -37,17 +45,27 @@ class MazeGenerator
   end
 
   def step()
-    neighbors = @maze.neighbors(@stack.last)
+    current_tile =  if @stack.length < @stack_limit
+      @stack.last
+    else
+      @stack.first
+    end
+
+    neighbors = @maze.neighbors(current_tile)
     neighbors.select! do |neighbor|
       @visitedTiles[neighbor.x][neighbor.y] == false
     end
 
     if neighbors.empty?
-      @stack.pop()
+      if @stack.length < @stack_limit
+        @stack.pop()
+      else
+        @stack.shift()
+      end
     else
       randomNeighbor = neighbors.sample
-      print "Removing wall between ", @stack.last, " and ", randomNeighbor, "\n" if ENV["DEBUG"] == "log"
-      @maze.set(@stack.last, randomNeighbor.dir_from(@stack.last), false)
+      print "Removing wall between ", current_tile, " and ", randomNeighbor, "\n" if ENV["DEBUG"] == "log"
+      @maze.set(current_tile, randomNeighbor.dir_from(current_tile), false)
 
       @stack.push(randomNeighbor)
       @visitedTiles[randomNeighbor.x][randomNeighbor.y] = true

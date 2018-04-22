@@ -1,5 +1,8 @@
 require_relative 'maze_generator'
 
-mazeGenerator = MazeGenerator.new(ARGV[0].to_i, ARGV[1].to_i)
+width = ARGV[0].to_i
+height = ARGV[1].to_i
+
+mazeGenerator = MazeGenerator.new(width, height, 40)
 mazeGenerator.generate!
 puts mazeGenerator.maze
