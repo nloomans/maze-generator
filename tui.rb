@@ -9,6 +9,10 @@ module TUI
       print "\e[0;0H"
     end
 
+    def self.reset_line()
+      print "\e[2K"
+    end
+
     def self.restore()
       print "\e[?1049l"
     end

@@ -31,6 +31,7 @@ class MazeSolver
         TUI::Cursor.restore
         puts @maze.to_s("   ", @stack)
         puts
+        TUI::Screen.reset_line
         puts "   Stack size: #{@stack.length}"
         puts "   Current algorithm: Depth-first search"
       end
