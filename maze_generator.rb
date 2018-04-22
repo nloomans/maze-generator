@@ -4,9 +4,9 @@ require_relative 'maze'
 class MazeGenerator
   attr_reader :maze
 
-  def initialize(width, height, stack_limit)
+  def initialize(width, height, stack_threshold)
     @maze = Maze.new(width, height)
-    @stack_limit = stack_limit
+    @stack_threshold = stack_threshold
     @visitedTiles = Array.new(width) { Array.new(height) { false } }
   end
 
@@ -30,8 +30,8 @@ class MazeGenerator
         print "\e[u" # Restore the cursor position
         print @maze.to_s("   ")
         print "\n\n"
-        puts "   Stack size: #{@stack.length}"
-        if @stack.length < @stack_limit
+        puts "   Stack size: #{@stack.length}/#{@stack_threshold}"
+        if @stack.length < @stack_threshold
           puts "   Current algorithm: Depth-first-search"
         else
           puts "   Current algorithm: Breath-first-search"
@@ -45,7 +45,7 @@ class MazeGenerator
   end
 
   def step()
-    current_tile =  if @stack.length < @stack_limit
+    current_tile =  if @stack.length < @stack_threshold
       @stack.last
     else
       @stack.first
@@ -57,7 +57,7 @@ class MazeGenerator
     end
 
     if neighbors.empty?
-      if @stack.length < @stack_limit
+      if @stack.length < @stack_threshold
         @stack.pop()
       else
         @stack.shift()
