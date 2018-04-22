@@ -9,7 +9,7 @@ class MazeGenerator
     @visitedTiles = Array.new(width) { Array.new(height) { false } }
   end
 
-  def generate()
+  def generate!()
     @visitedCells = [@currentPos]
     @stack = [Pos.new(rand(@maze.width), rand(@maze.height))]
 
